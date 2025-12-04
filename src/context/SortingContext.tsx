@@ -62,6 +62,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setActiveIndices([]);
         setStepType(null);
         setStatus('IDLE');
+        statusRef.current = 'IDLE';
         setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
     }, [status]);
 
@@ -84,6 +85,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (status === 'FINISHED') return;
 
         setStatus('RUNNING');
+        statusRef.current = 'RUNNING';
         setStats(prev => ({ ...prev, startTime: Date.now() }));
 
         const sortFn = getAlgorithmFunction(algorithm);
@@ -150,7 +152,12 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const reset = () => {
         setStatus('IDLE');
-        generateArray();
+        statusRef.current = 'IDLE';
+        const newArray = generateRandomArray(50, 10, 500);
+        setArray(newArray);
+        setActiveIndices([]);
+        setStepType(null);
+        setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
     };
 
     return (
