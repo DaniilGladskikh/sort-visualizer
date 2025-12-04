@@ -52,9 +52,9 @@ button {
 }
 
 .header {
-  background-color: var(--bg-secondary);
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: transparent;
+  padding: 1.5rem 0;
+  border-bottom: none;
   text-align: center;
 }
 
@@ -66,7 +66,7 @@ button {
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
+  padding: 0 0 2rem 0;
 }
 
 .footer {
@@ -174,50 +174,141 @@ button {
 /* Control Panel */
 .control-panel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  align-items: center;
+  gap: 2rem;
+  align-items: stretch;
   background-color: var(--bg-secondary);
-  padding: 1rem;
-  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 0;
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.control-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.settings-icon {
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.settings-header h3 {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+.control-actions {
+  flex: 1;
+  min-width: 300px;
 }
 
 .control-group {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 0.75rem;
+  margin-top: 0;
 }
 
 .control-group label {
   color: var(--text-secondary);
   font-weight: 500;
+  font-size: 0.875rem;
+  min-width: 120px;
 }
 
 .select {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.5rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.5rem;
   border-radius: 0.375rem;
   outline: none;
+  width: 250px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
 }
 
 .slider {
-  width: 150px;
+  width: 250px;
   accent-color: var(--accent-color);
 }
 
-.actions {
-  margin-left: auto;
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.speed-value {
+  min-width: 40px;
+  text-align: right;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding: 1rem 1rem 1rem 0;
+  flex: 1;
+}
+
+.action-buttons .btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  min-width: 120px;
+}
+
+.action-buttons .btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Info Section */
+.info-section {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Stats and Actions Row */
+.stats-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
 }
 
 /* Stats */
 .stats-container {
   display: flex;
-  gap: 2rem;
-  justify-content: center;
-  padding: 0.5rem;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  padding-left: 1rem;
+  flex-shrink: 0;
+  justify-content: flex-start;
 }
 
 .stat-item {
@@ -228,6 +319,7 @@ button {
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   min-width: 120px;
+  justify-content: center;
 }
 
 .stat-label {
@@ -242,11 +334,72 @@ button {
   color: var(--text-primary);
 }
 
+/* Algorithm Info */
+.algorithm-info {
+  flex: 1;
+  background-color: transparent;
+  padding: 0 0 0 2rem;
+  border-radius: 0;
+  border: none;
+  border-left: 3px solid var(--accent-color);
+  min-width: 300px;
+}
+
+.algorithm-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0;
+}
+
+.algorithm-icon {
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.algorithm-info h3 {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+.algorithm-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 1.75rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.complexity {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.complexity-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.complexity-badge {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: var(--warning-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 0.875rem;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
 /* Visualizer Bars */
 .visualizer-container {
   flex: 1;
   background-color: var(--bg-secondary);
-  border-radius: 0.75rem;
+  border-radius: 0;
   padding: 2rem;
   min-height: 400px;
   display: flex;
@@ -266,4 +419,5 @@ button {
   transition: height 0.1s ease;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+  cursor: pointer;
 }

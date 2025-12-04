@@ -27,6 +27,7 @@ const Visualizer: React.FC = () => {
                             backgroundColor: getBarColor(idx),
                             width: `${100 / array.length}%`,
                         }}
+                        title={`Значение: ${value}`}
                     ></div>
                 ))}
             </div>

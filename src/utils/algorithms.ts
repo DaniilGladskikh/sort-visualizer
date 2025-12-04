@@ -144,3 +144,178 @@ export const quickSort = (array: number[]): SortingStep[] => {
     sort(0, arr.length - 1);
     return steps;
 };
+
+export const insertionSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+    const n = arr.length;
+
+    for (let i = 1; i < n; i++) {
+        let key = arr[i];
+        let j = i - 1;
+
+        steps.push({ type: 'COMPARE', indices: [j, i] });
+
+        while (j >= 0 && arr[j] > key) {
+            steps.push({ type: 'COMPARE', indices: [j, i] }); // Visualize comparison
+            steps.push({ type: 'OVERWRITE', indices: [j + 1], value: arr[j] });
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        steps.push({ type: 'OVERWRITE', indices: [j + 1], value: key });
+        arr[j + 1] = key;
+    }
+    return steps;
+};
+
+export const selectionSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+    const n = arr.length;
+
+    for (let i = 0; i < n - 1; i++) {
+        let minIdx = i;
+        for (let j = i + 1; j < n; j++) {
+            steps.push({ type: 'COMPARE', indices: [minIdx, j] });
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx !== i) {
+            steps.push({ type: 'SWAP', indices: [i, minIdx] });
+            [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+        }
+    }
+    return steps;
+};
+
+export const shellSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+    const n = arr.length;
+
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i];
+            let j;
+            for (j = i; j >= gap; j -= gap) {
+                steps.push({ type: 'COMPARE', indices: [j - gap, i] });
+                if (arr[j - gap] > temp) {
+                    steps.push({ type: 'OVERWRITE', indices: [j], value: arr[j - gap] });
+                    arr[j] = arr[j - gap];
+                } else {
+                    break;
+                }
+            }
+            steps.push({ type: 'OVERWRITE', indices: [j], value: temp });
+            arr[j] = temp;
+        }
+    }
+    return steps;
+};
+
+export const cocktailShakerSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+    let start = 0;
+    let end = arr.length - 1;
+    let swapped = true;
+
+    while (swapped) {
+        swapped = false;
+        for (let i = start; i < end; i++) {
+            steps.push({ type: 'COMPARE', indices: [i, i + 1] });
+            if (arr[i] > arr[i + 1]) {
+                steps.push({ type: 'SWAP', indices: [i, i + 1] });
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+
+        if (!swapped) break;
+
+        swapped = false;
+        end--;
+
+        for (let i = end - 1; i >= start; i--) {
+            steps.push({ type: 'COMPARE', indices: [i, i + 1] });
+            if (arr[i] > arr[i + 1]) {
+                steps.push({ type: 'SWAP', indices: [i, i + 1] });
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+        start++;
+    }
+    return steps;
+};
+
+export const gnomeSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+    const n = arr.length;
+    let index = 0;
+
+    while (index < n) {
+        if (index === 0) {
+            index++;
+        }
+        steps.push({ type: 'COMPARE', indices: [index, index - 1] });
+        if (arr[index] >= arr[index - 1]) {
+            index++;
+        } else {
+            steps.push({ type: 'SWAP', indices: [index, index - 1] });
+            [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]];
+            index--;
+        }
+    }
+    return steps;
+};
+
+export const radixSort = (array: number[]): SortingStep[] => {
+    const steps: SortingStep[] = [];
+    const arr = [...array];
+
+    const getMax = (arr: number[]) => {
+        let max = arr[0];
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i] > max) max = arr[i];
+        }
+        return max;
+    };
+
+    const countSort = (arr: number[], exp: number) => {
+        const n = arr.length;
+        const output = new Array(n).fill(0);
+        const count = new Array(10).fill(0);
+
+        for (let i = 0; i < n; i++) {
+            steps.push({ type: 'COMPARE', indices: [i, i] });
+            count[Math.floor(arr[i] / exp) % 10]++;
+        }
+
+        for (let i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (let i = n - 1; i >= 0; i--) {
+            const digit = Math.floor(arr[i] / exp) % 10;
+            const targetIndex = count[digit] - 1;
+            output[targetIndex] = arr[i];
+            count[digit]--;
+        }
+
+        for (let i = 0; i < n; i++) {
+            steps.push({ type: 'OVERWRITE', indices: [i], value: output[i] });
+            arr[i] = output[i];
+        }
+    };
+
+    const max = getMax(arr);
+
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countSort(arr, exp);
+    }
+
+    return steps;
+};

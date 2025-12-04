@@ -11,8 +11,10 @@ interface SortingContextType {
     stats: SortingStats;
     activeIndices: number[];
     stepType: SortingStep['type'] | null;
+    arraySize: number;
     setAlgorithm: (algo: AlgorithmType) => void;
     setSpeed: (speed: number) => void;
+    setArraySize: (size: number) => void;
     generateArray: () => void;
     startSorting: () => void;
     pauseSorting: () => void;
@@ -42,6 +44,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
     const [activeIndices, setActiveIndices] = useState<number[]>([]);
     const [stepType, setStepType] = useState<SortingStep['type'] | null>(null);
+    const [arraySize, setArraySize] = useState<number>(50);
 
     const statusRef = useRef<SortingStatus>('IDLE');
     const arrayRef = useRef<number[]>([]);
@@ -57,18 +60,24 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const generateArray = useCallback(() => {
         if (status === 'RUNNING') return;
-        const newArray = generateRandomArray(50, 10, 500);
+        const newArray = generateRandomArray(arraySize, 10, 500);
         setArray(newArray);
         setActiveIndices([]);
         setStepType(null);
         setStatus('IDLE');
         statusRef.current = 'IDLE';
         setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
-    }, [status]);
+    }, [status, arraySize]);
 
     useEffect(() => {
         generateArray();
     }, []);
+
+    useEffect(() => {
+        if (status === 'IDLE') {
+            generateArray();
+        }
+    }, [arraySize]);
 
     const getAlgorithmFunction = (algo: AlgorithmType) => {
         switch (algo) {
@@ -76,6 +85,12 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             case 'QUICK': return algorithms.quickSort;
             case 'MERGE': return algorithms.mergeSort;
             case 'HEAP': return algorithms.heapSort;
+            case 'INSERTION': return algorithms.insertionSort;
+            case 'SELECTION': return algorithms.selectionSort;
+            case 'SHELL': return algorithms.shellSort;
+            case 'COCKTAIL': return algorithms.cocktailShakerSort;
+            case 'GNOME': return algorithms.gnomeSort;
+            case 'RADIX': return algorithms.radixSort;
             default: return algorithms.bubbleSort;
         }
     };
@@ -95,9 +110,9 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         let swaps = 0;
 
         for (const step of steps) {
-            if (statusRef.current === 'IDLE') break;
+            if ((statusRef.current as SortingStatus) === 'IDLE') break;
 
-            while (statusRef.current === 'PAUSED') {
+            while ((statusRef.current as SortingStatus) === 'PAUSED') {
                 await wait(100);
                 if ((statusRef.current as SortingStatus) === 'IDLE') return;
             }
@@ -153,7 +168,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const reset = () => {
         setStatus('IDLE');
         statusRef.current = 'IDLE';
-        const newArray = generateRandomArray(50, 10, 500);
+        const newArray = generateRandomArray(arraySize, 10, 500);
         setArray(newArray);
         setActiveIndices([]);
         setStepType(null);
@@ -170,8 +185,10 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
                 stats,
                 activeIndices,
                 stepType,
+                arraySize,
                 setAlgorithm,
                 setSpeed,
+                setArraySize,
                 generateArray,
                 startSorting,
                 pauseSorting,

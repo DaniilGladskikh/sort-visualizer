@@ -1,4 +1,4 @@
-export type AlgorithmType = 'BUBBLE' | 'QUICK' | 'MERGE' | 'HEAP';
+export type AlgorithmType = 'BUBBLE' | 'QUICK' | 'MERGE' | 'HEAP' | 'INSERTION' | 'SELECTION' | 'SHELL' | 'COCKTAIL' | 'GNOME' | 'RADIX';
 
 export type SortingStatus = 'IDLE' | 'RUNNING' | 'PAUSED' | 'FINISHED';
 
