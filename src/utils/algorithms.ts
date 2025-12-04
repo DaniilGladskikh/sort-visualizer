@@ -151,7 +151,7 @@ export const insertionSort = (array: number[]): SortingStep[] => {
     const n = arr.length;
 
     for (let i = 1; i < n; i++) {
-        let key = arr[i];
+        const key = arr[i];
         let j = i - 1;
 
         steps.push({ type: 'COMPARE', indices: [j, i] });

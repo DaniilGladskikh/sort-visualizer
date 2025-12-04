@@ -59,7 +59,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }, [array]);
 
     const generateArray = useCallback(() => {
-        if (status === 'RUNNING') return;
+        if (statusRef.current === 'RUNNING') return;
         const newArray = generateRandomArray(arraySize, 10, 500);
         setArray(newArray);
         setActiveIndices([]);
@@ -67,17 +67,13 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setStatus('IDLE');
         statusRef.current = 'IDLE';
         setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
-    }, [status, arraySize]);
+    }, [arraySize]);
 
     useEffect(() => {
         generateArray();
-    }, []);
+    }, [generateArray]);
 
-    useEffect(() => {
-        if (status === 'IDLE') {
-            generateArray();
-        }
-    }, [arraySize]);
+
 
     const getAlgorithmFunction = (algo: AlgorithmType) => {
         switch (algo) {
