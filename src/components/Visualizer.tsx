@@ -2,9 +2,12 @@ import React from 'react';
 import { useSorting } from '../context/SortingContext';
 
 const Visualizer: React.FC = () => {
-    const { array, activeIndices, stepType, status } = useSorting();
+    const { array, activeIndices, stepType, status, sortedIndices } = useSorting();
 
     const getBarColor = (index: number) => {
+        // Prioritize sorted state
+        if (sortedIndices.has(index)) return 'var(--bar-sorted)';
+
         if (status === 'FINISHED') return 'var(--bar-sorted)';
 
         if (activeIndices.includes(index)) {

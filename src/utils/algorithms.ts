@@ -36,6 +36,11 @@ export const mergeSort = (array: number[]): SortingStep[] => {
             j++;
             k++;
         }
+
+        // Mark the merged range as sorted
+        for (let idx = low; idx <= high; idx++) {
+            steps.push({ type: 'SORTED', indices: [idx] });
+        }
     };
 
     const sort = (low: number, high: number) => {
@@ -44,6 +49,9 @@ export const mergeSort = (array: number[]): SortingStep[] => {
             sort(low, mid);
             sort(mid + 1, high);
             merge(low, mid, high);
+        } else if (low === high) {
+            // Single element is sorted
+            steps.push({ type: 'SORTED', indices: [low] });
         }
     };
 
@@ -89,8 +97,12 @@ export const heapSort = (array: number[]): SortingStep[] => {
     for (let i = n - 1; i > 0; i--) {
         steps.push({ type: 'SWAP', indices: [0, i] });
         [arr[0], arr[i]] = [arr[i], arr[0]];
+        // Mark the extracted element as sorted
+        steps.push({ type: 'SORTED', indices: [i] });
         heapify(i, 0);
     }
+    // Mark the root as sorted
+    if (n > 0) steps.push({ type: 'SORTED', indices: [0] });
 
     return steps;
 };
@@ -108,7 +120,11 @@ export const bubbleSort = (array: number[]): SortingStep[] => {
                 [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
             }
         }
+        // Mark the last element of this pass as sorted
+        steps.push({ type: 'SORTED', indices: [n - i - 1] });
     }
+    // Mark the first element as sorted
+    if (n > 0) steps.push({ type: 'SORTED', indices: [0] });
     return steps;
 };
 
@@ -130,6 +146,8 @@ export const quickSort = (array: number[]): SortingStep[] => {
         }
         steps.push({ type: 'SWAP', indices: [i + 1, high] });
         [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+        // Mark the pivot as sorted
+        steps.push({ type: 'SORTED', indices: [i + 1] });
         return i + 1;
     };
 
@@ -138,6 +156,9 @@ export const quickSort = (array: number[]): SortingStep[] => {
             const pi = partition(low, high);
             sort(low, pi - 1);
             sort(pi + 1, high);
+        } else if (low === high) {
+            // Single element is sorted
+            steps.push({ type: 'SORTED', indices: [low] });
         }
     };
 
@@ -149,6 +170,9 @@ export const insertionSort = (array: number[]): SortingStep[] => {
     const steps: SortingStep[] = [];
     const arr = [...array];
     const n = arr.length;
+
+    // First element is already sorted
+    if (n > 0) steps.push({ type: 'SORTED', indices: [0] });
 
     for (let i = 1; i < n; i++) {
         const key = arr[i];
@@ -164,6 +188,8 @@ export const insertionSort = (array: number[]): SortingStep[] => {
         }
         steps.push({ type: 'OVERWRITE', indices: [j + 1], value: key });
         arr[j + 1] = key;
+        // Mark the inserted element as sorted
+        steps.push({ type: 'SORTED', indices: [j + 1] });
     }
     return steps;
 };
@@ -185,7 +211,11 @@ export const selectionSort = (array: number[]): SortingStep[] => {
             steps.push({ type: 'SWAP', indices: [i, minIdx] });
             [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
         }
+        // Mark the selected element as sorted
+        steps.push({ type: 'SORTED', indices: [i] });
     }
+    // Mark the last element as sorted
+    if (n > 0) steps.push({ type: 'SORTED', indices: [n - 1] });
     return steps;
 };
 
@@ -211,6 +241,10 @@ export const shellSort = (array: number[]): SortingStep[] => {
             arr[j] = temp;
         }
     }
+    // Mark all elements as sorted after final pass
+    for (let i = 0; i < n; i++) {
+        steps.push({ type: 'SORTED', indices: [i] });
+    }
     return steps;
 };
 
@@ -233,6 +267,8 @@ export const cocktailShakerSort = (array: number[]): SortingStep[] => {
         }
 
         if (!swapped) break;
+        // Mark the end element as sorted
+        steps.push({ type: 'SORTED', indices: [end] });
 
         swapped = false;
         end--;
@@ -245,7 +281,13 @@ export const cocktailShakerSort = (array: number[]): SortingStep[] => {
                 swapped = true;
             }
         }
+        // Mark the start element as sorted
+        if (swapped) steps.push({ type: 'SORTED', indices: [start] });
         start++;
+    }
+    // Mark remaining elements as sorted
+    for (let i = start; i <= end; i++) {
+        steps.push({ type: 'SORTED', indices: [i] });
     }
     return steps;
 };
@@ -262,6 +304,8 @@ export const gnomeSort = (array: number[]): SortingStep[] => {
         }
         steps.push({ type: 'COMPARE', indices: [index, index - 1] });
         if (arr[index] >= arr[index - 1]) {
+            // Mark the previous element as sorted when moving forward
+            steps.push({ type: 'SORTED', indices: [index - 1] });
             index++;
         } else {
             steps.push({ type: 'SWAP', indices: [index, index - 1] });
@@ -269,6 +313,8 @@ export const gnomeSort = (array: number[]): SortingStep[] => {
             index--;
         }
     }
+    // Mark the last element as sorted
+    if (n > 0) steps.push({ type: 'SORTED', indices: [n - 1] });
     return steps;
 };
 
@@ -315,6 +361,11 @@ export const radixSort = (array: number[]): SortingStep[] => {
 
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
         countSort(arr, exp);
+    }
+
+    // Mark all elements as sorted after final pass
+    for (let i = 0; i < arr.length; i++) {
+        steps.push({ type: 'SORTED', indices: [i] });
     }
 
     return steps;

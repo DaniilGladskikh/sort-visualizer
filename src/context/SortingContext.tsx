@@ -11,6 +11,7 @@ interface SortingContextType {
     stats: SortingStats;
     activeIndices: number[];
     stepType: SortingStep['type'] | null;
+    sortedIndices: Set<number>;
     arraySize: number;
     setAlgorithm: (algo: AlgorithmType) => void;
     setSpeed: (speed: number) => void;
@@ -44,6 +45,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
     const [activeIndices, setActiveIndices] = useState<number[]>([]);
     const [stepType, setStepType] = useState<SortingStep['type'] | null>(null);
+    const [sortedIndices, setSortedIndices] = useState<Set<number>>(new Set());
     const [arraySize, setArraySize] = useState<number>(50);
 
     const statusRef = useRef<SortingStatus>('IDLE');
@@ -64,6 +66,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setArray(newArray);
         setActiveIndices([]);
         setStepType(null);
+        setSortedIndices(new Set());
         setStatus('IDLE');
         statusRef.current = 'IDLE';
         setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
@@ -139,6 +142,12 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
                         return newArr;
                     });
                 }
+            } else if (step.type === 'SORTED') {
+                setSortedIndices(prev => {
+                    const newSet = new Set(prev);
+                    step.indices.forEach(idx => newSet.add(idx));
+                    return newSet;
+                });
             }
 
             setStats(prev => ({ ...prev, comparisons, swaps }));
@@ -168,6 +177,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setArray(newArray);
         setActiveIndices([]);
         setStepType(null);
+        setSortedIndices(new Set());
         setStats({ comparisons: 0, swaps: 0, startTime: null, endTime: null });
     };
 
@@ -181,6 +191,7 @@ export const SortingProvider: React.FC<{ children: React.ReactNode }> = ({ child
                 stats,
                 activeIndices,
                 stepType,
+                sortedIndices,
                 arraySize,
                 setAlgorithm,
                 setSpeed,

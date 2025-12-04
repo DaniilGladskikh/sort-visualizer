@@ -2,7 +2,7 @@ export type AlgorithmType = 'BUBBLE' | 'QUICK' | 'MERGE' | 'HEAP' | 'INSERTION' 
 
 export type SortingStatus = 'IDLE' | 'RUNNING' | 'PAUSED' | 'FINISHED';
 
-export type StepType = 'COMPARE' | 'SWAP' | 'OVERWRITE';
+export type StepType = 'COMPARE' | 'SWAP' | 'OVERWRITE' | 'SORTED';
 
 export interface SortingStep {
     type: StepType;
